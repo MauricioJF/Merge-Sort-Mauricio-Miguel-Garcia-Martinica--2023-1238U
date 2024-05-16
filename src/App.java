@@ -1,62 +1,78 @@
-public class App {
-    public static void mergeSort(int[] arr, int left, int right ) {
-     
-        if (left < right) {
-             // Encuentra el punto medio del arreglo 
-            int mid = (left + right) / 2;
-            // Ordena recursivamente la mitad izquierda
-             mergeSort(arr, left, mid); 
-             // Ordena recursivamente la mitad derecha
-              mergeSort(arr, mid + 1, right);
-            // Combina las dos mitades ordenadas
-             merge(arr, left, mid, right);
-        }}  }
+import java.util.Scanner;
 
-        private static void merge(int[] arr, int left, int mid, int right) { 
-          
-            // Tamaños de los subarreglos a fusionar
-           
-            int sizeleft = mid - left + 1;
-            int sizeRight = right - mid;
-            
-             // Arreglos temporales para almacenar los subarreglos
-             
-            int[] tempLeft = new int[sizeleft]; 
-            int[] tempRight = new int[sizeRight];
-            
-             // copia datos a los arreglos temporales 
-            
-             for (int i = 0; i < sizeleft; i++) { 
-                tempLeft[i] = arr[left + i]; 
-                
-                for (int j = 0; j < sizeRight; j++) { 
-                    tempRight[j] = arr[mid + 1 + j]; }
-            
-             // Fusiona los subarreglos temporales en el arreglo original
-             
-            int i = 0, j = 0; 
-            int k = left;
-             
-             // Indice inicial para el arreglo fusionado
-            while (i < sizeleft && j < sizeRight) { 
-                if (tempLeft[i] <= tempRight[j]) {
-                     arr[k] = tempLeft[i];
-                      i++; } 
-                     
-                      else { 
-                        arr[k] = tempRight[j]; j++; 
-                       }
-                        k++;
+public class RegistroEstudiantes {
+    private String[] nombres;
+    private String[][] asignaturas;
+    private double[][] notas;
+    private double[] promedios;
+
+    public RegistroEstudiantes(int cantidadEstudiantes) {
+        this.nombres = new String[cantidadEstudiantes];
+        this.asignaturas = new String[cantidadEstudiantes][6];
+        this.notas = new double[cantidadEstudiantes][6];
+        this.promedios = new double[cantidadEstudiantes];
+    }
+
+    public void registrarEstudiantes() {
+        try (Scanner leer = new Scanner(System.in)) {
+            for (int i = 0; i < nombres.length; i++) {
+                System.out.println("Ingrese el nombre del estudiante " + (i + 1) + ":");
+                nombres[i] = leer.nextLine();
+
+                for (int j = 0; j < 6; j++) {
+                    System.out.println("Ingrese el nombre de la asignatura " + (j + 1) + ":");
+                    asignaturas[i][j] = leer.nextLine();
+
+                    try {
+                        System.out.println("Ingrese la nota de la asignatura " + (j + 1) + ":");
+                        notas[i][j] = leer.nextDouble();
+                        leer.nextLine(); 
+                    } catch (Exception e) {
+                        System.out.println("Error al ingresar la nota. Intente nuevamente.");
+                        j--; 
+                        leer.nextLine(); 
+                    }
+                }
             }
-            // Copia elementos restantes de tempLeft[] si los hay 
-             while (i < sizeleft) {
-                 arr[k] = tempLeft[i]; 
-                 i++; 
-                 k++; }
+        }
+    }
 
-            // Copia elementos restantes de tempRight[] si los hay 
-             while (j < sizeRight) {
-                 arr[k] = tempRight[j]; 
-                 j++; 
-                 k++;
-             }}}    
+    public void calcularPromedios() {
+        for (int i = 0; i < promedios.length; i++) {
+            double suma = 0;
+            for (int j = 0; j < 6; j++) {
+                suma += notas[i][j];
+            }
+            promedios[i] = suma / 6;
+        }
+    }
+
+    public void mostrarResultados() {
+        for (int i = 0; i < nombres.length; i++) {
+            System.out.println("Estudiante: " + nombres[i]);
+            for (int j = 0; j < 6; j++) {
+                System.out.println("Asignatura: " + asignaturas[i][j] + ", Nota: " + notas[i][j]);
+            }
+            System.out.println("Promedio: " + promedios[i]);
+            if (promedios[i] >= 3.0) {
+                System.out.println("Calificación: Satisfactorio");
+            } else {
+                System.out.println("Calificación: Insatisfactorio");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) {
+        try (Scanner leer1 = new Scanner(System.in)) {
+            System.out.println("Ingrese la cantidad de estudiantes:");
+            int cantidadEstudiantes = leer1.nextInt();
+            leer1.nextLine(); 
+
+            RegistroEstudiantes registro = new RegistroEstudiantes(cantidadEstudiantes);
+            registro.registrarEstudiantes();
+            registro.calcularPromedios();
+            registro.mostrarResultados();
+        }
+    }
+}
